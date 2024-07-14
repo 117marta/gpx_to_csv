@@ -25,10 +25,14 @@ def get_gpx_data():
     root_tree = tree.getroot()
     output = [HEADERS]
 
-    for trk in root_tree.iter("{%s}trk" % NAME_SPACE):
+    for trk in root_tree.findall("{%s}trk" % NAME_SPACE):
         name = trk.find("{%s}name" % NAME_SPACE).text
         description = trk.find("{%s}desc" % NAME_SPACE).text
-        short_info = (None, None, None, None, None, None, None, None, None, None, None, name, description)
+        extensions = trk.find("{%s}extensions" % NAME_SPACE)
+        for extension in extensions:
+            length = float(extension.find("{%s}length" % NAME_SPACE).text) / 1000
+            duration = extension.find("{%s}duration" % NAME_SPACE).text
+        short_info = (None, None, None, None, None, None, None, None, None, name, description, length, duration)
         output.append(short_info)
 
     return output
